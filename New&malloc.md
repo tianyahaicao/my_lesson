@@ -1,6 +1,6 @@
 # new&malloc
 ## 1. malloc()函数
-###1.1 malloc的全称是memory allocation，中文叫动态内存分配。
+### 1.1 malloc的全称是memory allocation，中文叫动态内存分配。
 原型：extern void *malloc(unsigned int num_bytes);
 说明：分配长度为num_bytes字节的内存块。如果分配成功则返回指向被分配内存的指针，分配失败返回空指针NULL。当内存不再使用时，应使用free()函数将内存块释放。
 
