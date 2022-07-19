@@ -45,13 +45,45 @@ int main()
 ## weak_ptr弱引用的智能指针
 std::weak_ptr有什么特点呢？与std::shared_ptr最大的差别是在赋值的时候，不会引起智能指针计数增加。
 
-weak_ptr被设计为与shared_ptr共同工作，可以从一个shared_ptr或者另一个weak_ptr对象构造，获得资源的观测权。但weak_ptr没有共享资源，它的构造不会引起指针引用计数的增加。
-同样，在weak_ptr析构时也不会导致引用计数的减少，它只是一个静静地观察者。weak_ptr没有重载operator*和->，这是特意的，因为它不共享指针，不能操作资源，这是它弱的原因。
-如要操作资源，则必须使用一个非常重要的成员函数lock()从被观测的shared_ptr获得一个可用的shared_ptr对象，从而操作资源。
+* weak_ptr被设计为与shared_ptr共同工作，可以从一个shared_ptr或者另一个weak_ptr对象构造，获得资源的观测权。但weak_ptr没有共享资源，它的构造不会引起指针引用计数的增加。
+* 同样，在weak_ptr析构时也不会导致引用计数的减少，它只是一个静静地观察者。weak_ptr没有重载operator*和->，这是特意的，因为它不共享指针，不能操作资源，这是它弱的原因。
+* 如要操作资源，则必须使用一个非常重要的成员函数lock()从被观测的shared_ptr获得一个可用的shared_ptr对象，从而操作资源。
 当我们创建一个weak_ptr时，要用一个shared_ptr来初始化它：
-  ```  
+```  
 auto p = make_shared<int>(42);
 weak_ptr<int> wp(p); // wp弱共享p; p的引用计数未改变
-  ```
+```
   
-  
+## unique_ptr独占的智能指针
+    unique_ptr相对于其他两个智能指针更加简单，它和shared_ptr使用差不多，但是功能更为单一，它是一个独占型的智能指针，不允许其他的智能指针共享其内部的指针，更像原生的指针（但更为安全，能够自己释放内存）。**不允许赋值和拷贝操作，只能够移动**。
+    
+```
+std::unique_ptr<int> ptr1(new int(0));
+std::unique_ptr<int> ptr2 = ptr1; // 错误，不能复制
+std::unique_ptr<int> ptr3 = std::move(ptr1); // 可以移动
+```
+    
+在 C++14 中，对于std::unique_ptr引入了std::make_unique方法进行初始化。
+    
+ ```   
+#include <iostream>
+#include <memory>
+
+int main()
+{
+    std::unique_ptr<std::string> ptr1(new std::string("unique_ptr"));
+    std::cout << "ptr1 is " << *ptr1 << std::endl;
+
+    std::unique_ptr<std::string> ptr2 = std::make_unique<std::string>("make_unique init!");
+    std::cout << "ptr2 is " << *ptr2 << std::endl;
+
+    return 0;
+}
+/*
+输出：
+ptr1 is unique_ptr
+ptr2 is make_unique init!
+*/
+```
+    
+    
