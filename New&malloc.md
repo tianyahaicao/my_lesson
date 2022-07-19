@@ -48,7 +48,7 @@ int *pi=new int( );//初始化为0
 int *pi=new int;//pi 指向一个没有初始化的int
 string *ps=new string( );//初始化为空字符串 （对于提供了默认构造函数的类类型，没有必要对其对象进行值初始化）
 ```
-
+在频繁调用场合，使用局部new类对象就不是个好选择，使用全局类对象或一个经过初始化的全局类指针似乎更加高效。
 
 ## 区别：
 1、new 是c++中的操作符，malloc是c 中的一个函数。
@@ -58,44 +58,24 @@ string *ps=new string( );//初始化为空字符串 （对于提供了默认构�
 ```
 class Obj
 {
-
 public :
-
-Obj(void){ cout << “Initialization” << endl; }
-
-~Obj(void){ cout << “Destroy” << endl; }
-
-void      Initialize(void){ cout << “Initialization” << endl; }
-
-void      Destroy(void){ cout << “Destroy” << endl; }
-
+    Obj(void){ cout << “Initialization” << endl; }
+    ~Obj(void){ cout << “Destroy” << endl; }
+    void Initialize(void){ cout << “Initialization” << endl; }
+    void Destroy(void){ cout << “Destroy” << endl; }
 };
 
 void UseMallocFree(void)
-
 {
-
-Obj    *a = (obj *)malloc(sizeof(obj));     // 申请动态内存
-
-a->Initialize();                          // 初始化
-
-//…
-
-a->Destroy();     // 清除工作
-
-free(a);          // 释放内存
-
+    Obj *a = (obj *)malloc(sizeof(obj));     // 申请动态内存
+    a->Initialize();                          // 初始化
+    a->Destroy();     // 清除工作
+    free(a);          // 释放内存
 }
 
 void UseNewDelete(void)
-
 {
-
-Obj    *a = new Obj;    // 申请动态内存并且初始化
-
-//…
-
-delete a;             // 清除并且释放内存
-
+    Obj *a = new Obj;    // 申请动态内存并且初始化
+    delete a;             // 清除并且释放内存
 } *
 ```
